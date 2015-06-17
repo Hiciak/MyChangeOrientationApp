@@ -3,4 +3,15 @@
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+
+    <string-array name="item_list_values">
+        <item>Orange</item>
+        <item>Apple</item>
+        <item>Banana</item>
+        <item>Potato</item>
+        <item>Tomato</item>
+        <item>Lemon</item>
+        <item>Carrot</item>
+        <item>Peach</item>
+    </string-array>
 </resources>
