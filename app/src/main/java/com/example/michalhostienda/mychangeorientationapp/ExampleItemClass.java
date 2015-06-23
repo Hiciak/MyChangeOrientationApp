@@ -11,6 +11,7 @@ public class ExampleItemClass implements Serializable {
     private String name;
     private double price;
     private String description;
+    private boolean selected;
 
     public ExampleItemClass() {
 
@@ -21,6 +22,7 @@ public class ExampleItemClass implements Serializable {
         this.name = name;
         this.price = price;
         this.description = description;
+        this.selected = false;
     }
 
     public int getId() {
@@ -53,5 +55,13 @@ public class ExampleItemClass implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public boolean isSelected() {
+        return selected;
+    }
+
+    public void setSelected(boolean selected) {
+        this.selected = selected;
     }
 }

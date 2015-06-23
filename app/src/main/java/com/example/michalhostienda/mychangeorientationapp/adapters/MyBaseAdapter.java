@@ -2,6 +2,7 @@ package com.example.michalhostienda.mychangeorientationapp.adapters;
 
 import android.app.Activity;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,11 +50,11 @@ public class MyBaseAdapter extends BaseAdapter {
             view = layoutInflater.inflate(R.layout.adapter_item_example_item_class, viewGroup, false);
         }
 
-        if(view.isSelected()) {
+        if(this.listOfItemsToShow.get(i).isSelected()) {
             view.setBackgroundColor(Color.RED);
         }
         else {
-            view.setBackgroundColor(Color.WHITE);
+            view.setBackgroundColor(Color.TRANSPARENT);
         }
 
         TextView tvNameOfObject = (TextView) view.findViewById(R.id.tv_adapter_item_example_item_class_1);

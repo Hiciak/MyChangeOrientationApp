@@ -23,15 +23,13 @@ public class ListOfItemsFragment extends Fragment implements AdapterView.OnItemC
 
     private ListView lvItemsList;
     private MyBaseAdapter myBaseAdapter;
+    private List<ExampleItemClass> valuesToBeShownInListView;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_item_list, container, false);
         this.lvItemsList = (ListView) view.findViewById(R.id.lv_item_list);
-
-
-
         return view;
     }
 
@@ -39,18 +37,19 @@ public class ListOfItemsFragment extends Fragment implements AdapterView.OnItemC
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         this.lvItemsList.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-                /**/
+
         Bundle bundle = this.getArguments();
-        List<ExampleItemClass> valuesToBeShownInListView = (List<ExampleItemClass>) bundle.getSerializable("valuesToShow");
-        if(valuesToBeShownInListView != null) {
+
+        // This warning may be solved by adding '@SuppressWarnings("unchecked")'
+        this.valuesToBeShownInListView = (List<ExampleItemClass>) bundle.getSerializable("valuesToShow");
+
+        if (valuesToBeShownInListView != null) {
             fillList(valuesToBeShownInListView);
         }
-        /**/
     }
 
     private void fillList(List<ExampleItemClass> listOfValuess) {
         this.myBaseAdapter = new MyBaseAdapter(listOfValuess, this.getActivity());
-
         this.lvItemsList.setOnItemClickListener(this);
         this.lvItemsList.setAdapter(myBaseAdapter);
     }
@@ -58,16 +57,14 @@ public class ListOfItemsFragment extends Fragment implements AdapterView.OnItemC
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         ExampleItemClass listItemValue = (ExampleItemClass) parent.getItemAtPosition(position);
-        Log.i("LIST_ITEM_VALUE:", listItemValue.getDescription());
-        Log.i("LIST_ITEM_ID", Integer.toString(position));
 
-//        View myView = this.lvItemsList.getSelectedView();
-//        if(myView != null) {
-//            myView.setSelected(false);
-//            this.myBaseAdapter.notifyDataSetChanged();
-//        }
+        for (ExampleItemClass eic : this.valuesToBeShownInListView) {
+            if (eic.isSelected()) {
+                eic.setSelected(false);
+            }
+        }
 
-        view.setSelected(true);
+        listItemValue.setSelected(true);
         this.myBaseAdapter.notifyDataSetChanged();
     }
 

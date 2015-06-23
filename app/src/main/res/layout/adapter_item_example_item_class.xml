@@ -9,6 +9,6 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Medium Text"
         android:id="@+id/tv_adapter_item_example_item_class_1"
-        android:paddingTop="60dp"
-        android:paddingBottom="60dp"/>
+        android:paddingTop="160dp"
+        android:paddingBottom="160dp"/>
 </LinearLayout>
