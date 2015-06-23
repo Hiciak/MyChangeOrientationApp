@@ -4,13 +4,10 @@ import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-
 import com.example.michalhostienda.mychangeorientationapp.fragments.ItemDetailFragment;
 import com.example.michalhostienda.mychangeorientationapp.fragments.ListOfItemsFragment;
-
 import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
@@ -53,22 +50,16 @@ public class MainActivity extends Activity {
     private void checkRotation() {
         FragmentManager fm = this.getFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
+
+        Map<String, ExampleItemClass> mapWithValues = getMapOfItems();
+        String[] valuesToBeShownInFragment = getStringArrayWithValuesToShow(mapWithValues);
+
+        Bundle bundleWithValuesToShowInList = new Bundle();
+        bundleWithValuesToShowInList.putStringArray("valuesToShow", valuesToBeShownInFragment);
+
         ListOfItemsFragment listOfItemsFragment = new ListOfItemsFragment();
+        listOfItemsFragment.setArguments(bundleWithValuesToShowInList);
         ItemDetailFragment itemDetailFragment = new ItemDetailFragment();
-
-        Map<String, ExampleItemClass> mapWithValuesToShowInListView = getMapOfItems();
-        String[] arrayWithValuesToShowInListView = new String[mapWithValuesToShowInListView.size()];
-        Iterator<String> keyValuesOfTheMap = mapWithValuesToShowInListView.keySet().iterator();
-        int i = 0;
-        while(keyValuesOfTheMap.hasNext()) {
-            arrayWithValuesToShowInListView[i] = keyValuesOfTheMap.next();
-            i++;
-        }
-
-        Bundle bundle = new Bundle();
-        bundle.putStringArray(GlobParam.BUNDLE_KEY_STRINGARRAY_VALUES, arrayWithValuesToShowInListView);
-
-        listOfItemsFragment.setArguments(bundle);
 
         int orientationValue = this.getResources().getConfiguration().orientation;
         if(orientationValue == 1) {
@@ -76,7 +67,6 @@ public class MainActivity extends Activity {
             ft.addToBackStack(null);
             ft.commit();
         } else {
-            ft.replace(R.id.fl_item_list, listOfItemsFragment, this.LIST_ITEMS_FRAGMENT);
             ft.replace(R.id.fl_item_detail, itemDetailFragment, this.ITEM_DETAIL_FRAGMENT);
             ft.addToBackStack(null);
             ft.commit();
@@ -94,16 +84,28 @@ public class MainActivity extends Activity {
         ExampleItemClass carrot = new ExampleItemClass(7, "Carrot", 0.20, "Description of the carrot");
         ExampleItemClass peach = new ExampleItemClass(8, "Peach", 2.00, "Description of the peach");
 
-        mapWithItems.put(orange.getName(), orange);
-        mapWithItems.put(apple.getName(), apple);
-        mapWithItems.put(banana.getName(), banana);
-        mapWithItems.put(potato.getName(), potato);
-        mapWithItems.put(tomato.getName(), tomato);
-        mapWithItems.put(lemon.getName(), lemon);
-        mapWithItems.put(carrot.getName(), carrot);
-        mapWithItems.put(peach.getName(), peach);
+        mapWithItems.put("Orange", orange);
+        mapWithItems.put("Apple", apple);
+        mapWithItems.put("banana", banana);
+        mapWithItems.put("potato", potato);
+        mapWithItems.put("tomato", tomato);
+        mapWithItems.put("lemon", lemon);
+        mapWithItems.put("carrot", carrot);
+        mapWithItems.put("peach", peach);
 
         return mapWithItems;
+    }
+
+    private String[] getStringArrayWithValuesToShow(Map<String, ExampleItemClass> mapOfItems) {
+        Iterator<String> iterator = mapOfItems.keySet().iterator();
+        String[] valuesToShowInFragment = new String[mapOfItems.size()];
+        int i = 0;
+        while(iterator.hasNext()) {
+            String key = iterator.next();
+            valuesToShowInFragment[i] = key;
+            i++;
+        }
+        return valuesToShowInFragment;
     }
 
 
