@@ -1,9 +1,11 @@
 package com.example.michalhostienda.mychangeorientationapp;
 
+import java.io.Serializable;
+
 /**
  * Created by Michal Krysiak.
  */
-public class ExampleItemClass {
+public class ExampleItemClass implements Serializable {
 
     private int id;
     private String name;

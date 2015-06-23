@@ -8,7 +8,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import com.example.michalhostienda.mychangeorientationapp.fragments.ItemDetailFragment;
 import com.example.michalhostienda.mychangeorientationapp.fragments.ListOfItemsFragment;
+
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -51,11 +54,12 @@ public class MainActivity extends Activity {
         FragmentManager fm = this.getFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
 
-        Map<String, ExampleItemClass> mapWithValues = getMapOfItems();
-        String[] valuesToBeShownInFragment = getStringArrayWithValuesToShow(mapWithValues);
+        List<ExampleItemClass> listWithValues = getListOfItems();
+//        String[] valuesToBeShownInFragment = getStringArrayWithValuesToShow(mapWithValues);
 
         Bundle bundleWithValuesToShowInList = new Bundle();
-        bundleWithValuesToShowInList.putStringArray("valuesToShow", valuesToBeShownInFragment);
+//        bundleWithValuesToShowInList.putStringArray("valuesToShow", valuesToBeShownInFragment);
+        bundleWithValuesToShowInList.putSerializable("valuesToShow", (java.io.Serializable) listWithValues);
 
         ListOfItemsFragment listOfItemsFragment = new ListOfItemsFragment();
         listOfItemsFragment.setArguments(bundleWithValuesToShowInList);
@@ -73,8 +77,9 @@ public class MainActivity extends Activity {
         }
     }
 
-    private Map<String, ExampleItemClass> getMapOfItems() {
-        Map<String, ExampleItemClass> mapWithItems = new TreeMap<>();
+    private List<ExampleItemClass> getListOfItems() {
+//        Map<String, ExampleItemClass> mapWithItems = new TreeMap<>();
+        List<ExampleItemClass> listOfObjects = new ArrayList<>();
         ExampleItemClass orange = new ExampleItemClass(1, "Orange", 0.50, "Description of the orange");
         ExampleItemClass apple = new ExampleItemClass(2, "Apple", 0.40, "Description of the apple");
         ExampleItemClass banana = new ExampleItemClass(3, "Banana", 0.70, "Description of the banana");
@@ -84,16 +89,26 @@ public class MainActivity extends Activity {
         ExampleItemClass carrot = new ExampleItemClass(7, "Carrot", 0.20, "Description of the carrot");
         ExampleItemClass peach = new ExampleItemClass(8, "Peach", 2.00, "Description of the peach");
 
-        mapWithItems.put("Orange", orange);
-        mapWithItems.put("Apple", apple);
-        mapWithItems.put("banana", banana);
-        mapWithItems.put("potato", potato);
-        mapWithItems.put("tomato", tomato);
-        mapWithItems.put("lemon", lemon);
-        mapWithItems.put("carrot", carrot);
-        mapWithItems.put("peach", peach);
+        listOfObjects.add(orange);
+        listOfObjects.add(apple);
+        listOfObjects.add(banana);
+        listOfObjects.add(potato);
+        listOfObjects.add(tomato);
+        listOfObjects.add(lemon);
+        listOfObjects.add(carrot);
+        listOfObjects.add(peach);
 
-        return mapWithItems;
+//        mapWithItems.put("Orange", orange);
+//        mapWithItems.put("Apple", apple);
+//        mapWithItems.put("banana", banana);
+//        mapWithItems.put("potato", potato);
+//        mapWithItems.put("tomato", tomato);
+//        mapWithItems.put("lemon", lemon);
+//        mapWithItems.put("carrot", carrot);
+//        mapWithItems.put("peach", peach);
+
+        return listOfObjects;
+//        return mapWithItems;
     }
 
     private String[] getStringArrayWithValuesToShow(Map<String, ExampleItemClass> mapOfItems) {
