@@ -6,4 +6,5 @@ package com.example.michalhostienda.mychangeorientationapp;
 public class GlobParam {
     public static final String BUNDLE_KEY_STRINGARRAY_VALUES = "BUNDLE_KEY_STRINGARRAY_VALUES";
     public static final String VALUE_OF_ITEM_SELECTED_IN_LISTVIEW = "VALUE_OF_ITEM_SELECTED_IN_LISTVIEW";
+    public static final String ID_OF_ITEM_SELECTED_IN_LISTVIEW = "ID_OF_ITEM_SELECTED_IN_LISTVIEW";
 }

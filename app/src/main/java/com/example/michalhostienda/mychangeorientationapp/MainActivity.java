@@ -54,16 +54,25 @@ public class MainActivity extends Activity {
         FragmentManager fm = this.getFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
 
-        List<ExampleItemClass> listWithValues = getListOfItems();
-//        String[] valuesToBeShownInFragment = getStringArrayWithValuesToShow(mapWithValues);
+        ListOfItemsFragment listOfItemsFragment = null;
+        ItemDetailFragment itemDetailFragment = null;
 
-        Bundle bundleWithValuesToShowInList = new Bundle();
-//        bundleWithValuesToShowInList.putStringArray("valuesToShow", valuesToBeShownInFragment);
-        bundleWithValuesToShowInList.putSerializable("valuesToShow", (java.io.Serializable) listWithValues);
+        listOfItemsFragment = (ListOfItemsFragment) fm.findFragmentByTag(this.LIST_ITEMS_FRAGMENT);
+        itemDetailFragment = (ItemDetailFragment) fm.findFragmentByTag(this.ITEM_DETAIL_FRAGMENT);
 
-        ListOfItemsFragment listOfItemsFragment = new ListOfItemsFragment();
-        listOfItemsFragment.setArguments(bundleWithValuesToShowInList);
-        ItemDetailFragment itemDetailFragment = new ItemDetailFragment();
+        if(listOfItemsFragment == null) {
+
+            List<ExampleItemClass> listWithValues = getListOfItems();
+            Bundle bundleWithValuesToShowInList = new Bundle();
+            bundleWithValuesToShowInList.putSerializable("valuesToShow", (java.io.Serializable) listWithValues);
+
+            listOfItemsFragment = new ListOfItemsFragment();
+            listOfItemsFragment.setArguments(bundleWithValuesToShowInList);
+        }
+
+        if(itemDetailFragment == null) {
+            itemDetailFragment = new ItemDetailFragment();
+        }
 
         int orientationValue = this.getResources().getConfiguration().orientation;
         if(orientationValue == 1) {
@@ -72,13 +81,13 @@ public class MainActivity extends Activity {
             ft.commit();
         } else {
             ft.replace(R.id.fl_item_detail, itemDetailFragment, this.ITEM_DETAIL_FRAGMENT);
+            ft.replace(R.id.fl_item_list, listOfItemsFragment, this.LIST_ITEMS_FRAGMENT);
             ft.addToBackStack(null);
             ft.commit();
         }
     }
 
     private List<ExampleItemClass> getListOfItems() {
-//        Map<String, ExampleItemClass> mapWithItems = new TreeMap<>();
         List<ExampleItemClass> listOfObjects = new ArrayList<>();
         ExampleItemClass orange = new ExampleItemClass(1, "Orange", 0.50, "Description of the orange");
         ExampleItemClass apple = new ExampleItemClass(2, "Apple", 0.40, "Description of the apple");
@@ -98,30 +107,6 @@ public class MainActivity extends Activity {
         listOfObjects.add(carrot);
         listOfObjects.add(peach);
 
-//        mapWithItems.put("Orange", orange);
-//        mapWithItems.put("Apple", apple);
-//        mapWithItems.put("banana", banana);
-//        mapWithItems.put("potato", potato);
-//        mapWithItems.put("tomato", tomato);
-//        mapWithItems.put("lemon", lemon);
-//        mapWithItems.put("carrot", carrot);
-//        mapWithItems.put("peach", peach);
-
         return listOfObjects;
-//        return mapWithItems;
     }
-
-    private String[] getStringArrayWithValuesToShow(Map<String, ExampleItemClass> mapOfItems) {
-        Iterator<String> iterator = mapOfItems.keySet().iterator();
-        String[] valuesToShowInFragment = new String[mapOfItems.size()];
-        int i = 0;
-        while(iterator.hasNext()) {
-            String key = iterator.next();
-            valuesToShowInFragment[i] = key;
-            i++;
-        }
-        return valuesToShowInFragment;
-    }
-
-
 }

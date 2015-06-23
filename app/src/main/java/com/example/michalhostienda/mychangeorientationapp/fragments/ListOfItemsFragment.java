@@ -12,8 +12,10 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.example.michalhostienda.mychangeorientationapp.ExampleItemClass;
+import com.example.michalhostienda.mychangeorientationapp.GlobParam;
 import com.example.michalhostienda.mychangeorientationapp.R;
 import com.example.michalhostienda.mychangeorientationapp.adapters.MyBaseAdapter;
 
@@ -21,9 +23,11 @@ import java.util.List;
 
 public class ListOfItemsFragment extends Fragment implements AdapterView.OnItemClickListener {
 
+    private int orientationValue;
     private ListView lvItemsList;
     private MyBaseAdapter myBaseAdapter;
     private List<ExampleItemClass> valuesToBeShownInListView;
+    private int idOfSelectedItem;
 
     @Nullable
     @Override
@@ -36,6 +40,9 @@ public class ListOfItemsFragment extends Fragment implements AdapterView.OnItemC
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+        this.orientationValue = this.getActivity().getResources().getConfiguration().orientation;
+        this.idOfSelectedItem = -1;
         this.lvItemsList.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 
         Bundle bundle = this.getArguments();
@@ -44,7 +51,25 @@ public class ListOfItemsFragment extends Fragment implements AdapterView.OnItemC
         this.valuesToBeShownInListView = (List<ExampleItemClass>) bundle.getSerializable("valuesToShow");
 
         if (valuesToBeShownInListView != null) {
+            myPreviousStateRetriever(savedInstanceState);
             fillList(valuesToBeShownInListView);
+        }
+    }
+
+    private void myPreviousStateRetriever(Bundle savedInstanceState) {
+        if(savedInstanceState != null) {
+            this.idOfSelectedItem = savedInstanceState.getInt(GlobParam.ID_OF_ITEM_SELECTED_IN_LISTVIEW);
+            if(this.idOfSelectedItem != -1) {
+                for (ExampleItemClass eic : this.valuesToBeShownInListView) {
+                    if (eic.getId() == this.idOfSelectedItem) {
+                        eic.setSelected(true);
+                        if(this.orientationValue != 1) {
+                            TextView tvDescription = (TextView) this.getActivity().findViewById(R.id.tv_item_description);
+                            tvDescription.setText(eic.getDescription());
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -66,9 +91,26 @@ public class ListOfItemsFragment extends Fragment implements AdapterView.OnItemC
 
         listItemValue.setSelected(true);
         this.myBaseAdapter.notifyDataSetChanged();
+        this.idOfSelectedItem = listItemValue.getId();
+
+        if(this.orientationValue == 1) {
+
+        } else {
+            TextView tvDescription = (TextView) this.getActivity().findViewById(R.id.tv_item_description);
+            tvDescription.setText(listItemValue.getDescription());
+        }
     }
 
-//    public View getViewByPosition(int pos, ListView listView) {
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        Log.i("MY_DEBUG", "HA ENTRAT EN onSaveInstanceState!!!!!, valor desat és: " + this.idOfSelectedItem);
+        super.onSaveInstanceState(outState);
+        if(this.idOfSelectedItem != -1) {
+            outState.putInt(GlobParam.ID_OF_ITEM_SELECTED_IN_LISTVIEW, this.idOfSelectedItem);
+        }
+    }
+
+    //    public View getViewByPosition(int pos, ListView listView) {
 //        final int firstListItemPosition = listView.getFirstVisiblePosition();
 //        final int lastListItemPosition = firstListItemPosition + listView.getChildCount() - 1;
 //
