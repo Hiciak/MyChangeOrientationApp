@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import com.example.michalhostienda.mychangeorientationapp.fragments.ItemDetailFragment;
 import com.example.michalhostienda.mychangeorientationapp.fragments.ListOfItemsFragment;
 
+import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -55,12 +56,27 @@ public class MainActivity extends Activity {
         ListOfItemsFragment listOfItemsFragment = new ListOfItemsFragment();
         ItemDetailFragment itemDetailFragment = new ItemDetailFragment();
 
+        Map<String, ExampleItemClass> mapWithValuesToShowInListView = getMapOfItems();
+        String[] arrayWithValuesToShowInListView = new String[mapWithValuesToShowInListView.size()];
+        Iterator<String> keyValuesOfTheMap = mapWithValuesToShowInListView.keySet().iterator();
+        int i = 0;
+        while(keyValuesOfTheMap.hasNext()) {
+            arrayWithValuesToShowInListView[i] = keyValuesOfTheMap.next();
+            i++;
+        }
+
+        Bundle bundle = new Bundle();
+        bundle.putStringArray(GlobParam.BUNDLE_KEY_STRINGARRAY_VALUES, arrayWithValuesToShowInListView);
+
+        listOfItemsFragment.setArguments(bundle);
+
         int orientationValue = this.getResources().getConfiguration().orientation;
         if(orientationValue == 1) {
             ft.replace(R.id.fl_item_list, listOfItemsFragment, this.LIST_ITEMS_FRAGMENT);
             ft.addToBackStack(null);
             ft.commit();
         } else {
+            ft.replace(R.id.fl_item_list, listOfItemsFragment, this.LIST_ITEMS_FRAGMENT);
             ft.replace(R.id.fl_item_detail, itemDetailFragment, this.ITEM_DETAIL_FRAGMENT);
             ft.addToBackStack(null);
             ft.commit();
@@ -77,8 +93,16 @@ public class MainActivity extends Activity {
         ExampleItemClass lemon = new ExampleItemClass(6, "Lemon", 1.60, "Description of the lemon");
         ExampleItemClass carrot = new ExampleItemClass(7, "Carrot", 0.20, "Description of the carrot");
         ExampleItemClass peach = new ExampleItemClass(8, "Peach", 2.00, "Description of the peach");
-//AQUIIIIIIIIIIII!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        mapWithItems.put("Orange", orange);
+
+        mapWithItems.put(orange.getName(), orange);
+        mapWithItems.put(apple.getName(), apple);
+        mapWithItems.put(banana.getName(), banana);
+        mapWithItems.put(potato.getName(), potato);
+        mapWithItems.put(tomato.getName(), tomato);
+        mapWithItems.put(lemon.getName(), lemon);
+        mapWithItems.put(carrot.getName(), carrot);
+        mapWithItems.put(peach.getName(), peach);
+
         return mapWithItems;
     }
 
