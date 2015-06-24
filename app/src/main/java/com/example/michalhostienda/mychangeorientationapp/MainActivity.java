@@ -4,8 +4,11 @@ import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
+
 import com.example.michalhostienda.mychangeorientationapp.fragments.ItemDetailFragment;
 import com.example.michalhostienda.mychangeorientationapp.fragments.ListOfItemsFragment;
 
@@ -16,15 +19,21 @@ import java.util.Map;
 import java.util.TreeMap;
 
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements ListOfItemsFragment.MyInterfaceToSendObjectsFromFragmentToActivity {
 
     public static final String LIST_ITEMS_FRAGMENT = "LIST_ITEMS_FRAGMENT";
     public static final String ITEM_DETAIL_FRAGMENT = "ITEM_DETAIL_FRAGMENT";
+    private List<ExampleItemClass> listWithValues;
+    private int orientationValue;
+    private ItemDetailFragment itemDetailFragment;
+    private MyInterfaceToSendObjectsFromActivityToFragment mitsofatf;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        this.listWithValues = null;
+        this.orientationValue = -1;
         checkRotation();
     }
 
@@ -55,14 +64,14 @@ public class MainActivity extends Activity {
         FragmentTransaction ft = fm.beginTransaction();
 
         ListOfItemsFragment listOfItemsFragment = null;
-        ItemDetailFragment itemDetailFragment = null;
+        this.itemDetailFragment = null;
 
         listOfItemsFragment = (ListOfItemsFragment) fm.findFragmentByTag(this.LIST_ITEMS_FRAGMENT);
-        itemDetailFragment = (ItemDetailFragment) fm.findFragmentByTag(this.ITEM_DETAIL_FRAGMENT);
+        this.itemDetailFragment = (ItemDetailFragment) fm.findFragmentByTag(this.ITEM_DETAIL_FRAGMENT);
 
-        if(listOfItemsFragment == null) {
+        if (listOfItemsFragment == null) {
 
-            List<ExampleItemClass> listWithValues = getListOfItems();
+            this.listWithValues = getListOfItems();
             Bundle bundleWithValuesToShowInList = new Bundle();
             bundleWithValuesToShowInList.putSerializable("valuesToShow", (java.io.Serializable) listWithValues);
 
@@ -70,21 +79,25 @@ public class MainActivity extends Activity {
             listOfItemsFragment.setArguments(bundleWithValuesToShowInList);
         }
 
-        if(itemDetailFragment == null) {
-            itemDetailFragment = new ItemDetailFragment();
+        if (this.itemDetailFragment == null) {
+            this.itemDetailFragment = new ItemDetailFragment();
         }
 
-        int orientationValue = this.getResources().getConfiguration().orientation;
-        if(orientationValue == 1) {
-            ft.replace(R.id.fl_item_list, listOfItemsFragment, this.LIST_ITEMS_FRAGMENT);
-            ft.addToBackStack(null);
-            ft.commit();
+        orientationValue = this.getResources().getConfiguration().orientation;
+        if (orientationValue == 1) {
+            if(!listOfItemsFragment.isAdded()) {
+                ft.add(R.id.fl_item_list, listOfItemsFragment, this.LIST_ITEMS_FRAGMENT);
+            }
         } else {
-            ft.replace(R.id.fl_item_detail, itemDetailFragment, this.ITEM_DETAIL_FRAGMENT);
-            ft.replace(R.id.fl_item_list, listOfItemsFragment, this.LIST_ITEMS_FRAGMENT);
-            ft.addToBackStack(null);
-            ft.commit();
+            if(!this.itemDetailFragment.isAdded()) {
+                ft.add(R.id.fl_item_detail, this.itemDetailFragment, this.ITEM_DETAIL_FRAGMENT);
+            }
+            if (!listOfItemsFragment.isAdded()) {
+                ft.add(R.id.fl_item_list, listOfItemsFragment, this.LIST_ITEMS_FRAGMENT);
+            }
         }
+        ft.addToBackStack(null);
+        ft.commit();
     }
 
     private List<ExampleItemClass> getListOfItems() {
@@ -108,5 +121,26 @@ public class MainActivity extends Activity {
         listOfObjects.add(peach);
 
         return listOfObjects;
+    }
+
+    @Override
+    public void onItemSelectedFromListView(ExampleItemClass itemSelected) {
+        this.mitsofatf = (MyInterfaceToSendObjectsFromActivityToFragment) this.itemDetailFragment;
+        if(this.orientationValue == 1) {
+            this.mitsofatf.recieveAnObjectFromActivity(itemSelected);
+        } else {
+//            TextView tvItemDescription = (TextView) findViewById(R.id.tv_item_description);
+//            tvItemDescription.setText(itemSelected.getDescription());
+            try{
+//                this.mitsofatf = (MyInterfaceToSendObjectsFromActivityToFragment) this.itemDetailFragment;
+                this.mitsofatf.recieveAnObjectFromActivity(itemSelected);
+            } catch(Exception e) {
+                Log.e("MY_DEBUG", "ERROR in onItemSelectedFromListView, error message is: " + e.getMessage());
+            }
+        }
+    }
+
+    public interface MyInterfaceToSendObjectsFromActivityToFragment {
+        public void recieveAnObjectFromActivity(ExampleItemClass eic);
     }
 }

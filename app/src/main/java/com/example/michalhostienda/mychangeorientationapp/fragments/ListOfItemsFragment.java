@@ -1,5 +1,6 @@
 package com.example.michalhostienda.mychangeorientationapp.fragments;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.content.res.Resources;
 import android.graphics.Color;
@@ -28,6 +29,7 @@ public class ListOfItemsFragment extends Fragment implements AdapterView.OnItemC
     private MyBaseAdapter myBaseAdapter;
     private List<ExampleItemClass> valuesToBeShownInListView;
     private int idOfSelectedItem;
+    private MyInterfaceToSendObjectsFromFragmentToActivity itcbaaf;
 
     @Nullable
     @Override
@@ -39,6 +41,8 @@ public class ListOfItemsFragment extends Fragment implements AdapterView.OnItemC
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
+        Log.i("MY_DEBUG", "HA ENTRAT EN onActivityCreated!!!!!, valor abans de desar és: " + this.idOfSelectedItem);
+
         super.onActivityCreated(savedInstanceState);
 
         this.orientationValue = this.getActivity().getResources().getConfiguration().orientation;
@@ -63,10 +67,6 @@ public class ListOfItemsFragment extends Fragment implements AdapterView.OnItemC
                 for (ExampleItemClass eic : this.valuesToBeShownInListView) {
                     if (eic.getId() == this.idOfSelectedItem) {
                         eic.setSelected(true);
-                        if(this.orientationValue != 1) {
-                            TextView tvDescription = (TextView) this.getActivity().findViewById(R.id.tv_item_description);
-                            tvDescription.setText(eic.getDescription());
-                        }
                     }
                 }
             }
@@ -93,12 +93,7 @@ public class ListOfItemsFragment extends Fragment implements AdapterView.OnItemC
         this.myBaseAdapter.notifyDataSetChanged();
         this.idOfSelectedItem = listItemValue.getId();
 
-        if(this.orientationValue == 1) {
-
-        } else {
-            TextView tvDescription = (TextView) this.getActivity().findViewById(R.id.tv_item_description);
-            tvDescription.setText(listItemValue.getDescription());
-        }
+        this.itcbaaf.onItemSelectedFromListView(listItemValue);
     }
 
     @Override
@@ -110,15 +105,17 @@ public class ListOfItemsFragment extends Fragment implements AdapterView.OnItemC
         }
     }
 
-    //    public View getViewByPosition(int pos, ListView listView) {
-//        final int firstListItemPosition = listView.getFirstVisiblePosition();
-//        final int lastListItemPosition = firstListItemPosition + listView.getChildCount() - 1;
-//
-//        if (pos < firstListItemPosition || pos > lastListItemPosition ) {
-//            return listView.getAdapter().getView(pos, null, listView);
-//        } else {
-//            final int childIndex = pos - firstListItemPosition;
-//            return listView.getChildAt(childIndex);
-//        }
-//    }
+    public interface MyInterfaceToSendObjectsFromFragmentToActivity {
+        public void onItemSelectedFromListView(ExampleItemClass itemSelected);
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        try {
+            this.itcbaaf = (MyInterfaceToSendObjectsFromFragmentToActivity) activity;
+        } catch(Exception e) {
+            Log.e("MY_DEBUG", "ERROR in onAttach, message error is: " + e.getMessage());
+        }
+    }
 }
