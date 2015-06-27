@@ -128,11 +128,22 @@ public class MainActivity extends Activity implements ListOfItemsFragment.MyInte
         this.mitsofatf = (MyInterfaceToSendObjectsFromActivityToFragment) this.itemDetailFragment;
         if(this.orientationValue == 1) {
             this.mitsofatf.recieveAnObjectFromActivity(itemSelected);
+            /**/
+            FragmentManager fm = this.getFragmentManager();
+            FragmentTransaction ft = fm.beginTransaction();
+
+            fm.popBackStackImmediate(null, fm.POP_BACK_STACK_INCLUSIVE);
+
+            ft.remove(this.itemDetailFragment);
+            ft.commit();
+            fm.executePendingTransactions();
+            ft = fm.beginTransaction();
+            ft.replace(R.id.fl_item_list, this.itemDetailFragment, this.ITEM_DETAIL_FRAGMENT);
+            ft.addToBackStack(null);
+            ft.commit();
+            /**/
         } else {
-//            TextView tvItemDescription = (TextView) findViewById(R.id.tv_item_description);
-//            tvItemDescription.setText(itemSelected.getDescription());
             try{
-//                this.mitsofatf = (MyInterfaceToSendObjectsFromActivityToFragment) this.itemDetailFragment;
                 this.mitsofatf.recieveAnObjectFromActivity(itemSelected);
             } catch(Exception e) {
                 Log.e("MY_DEBUG", "ERROR in onItemSelectedFromListView, error message is: " + e.getMessage());
